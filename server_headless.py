@@ -3,7 +3,7 @@ import os
 import sys
 
 from dashboard.server import DashboardServer, PORT
-from main import JarvisOrchestrator
+from main import JarvisLive
 
 class HeadlessUI:
     def __init__(self):
@@ -24,7 +24,7 @@ class HeadlessUI:
 
 async def start_headless():
     ui = HeadlessUI()
-    jarvis = JarvisOrchestrator(ui)
+    jarvis = JarvisLive(ui)
     
     server = DashboardServer()
     

@@ -1,3 +1,4 @@
+import os
 import platform as _platform
 import subprocess as _subprocess
 
@@ -504,6 +505,7 @@ class JarvisLive:
             await self.session.send_realtime_input(media=msg)
 
     async def _listen_audio(self):
+        if sd is None: return
         print("[J.A.R.V.I.S] 🎤 Mic started")
         loop = asyncio.get_event_loop()
 
@@ -648,6 +650,7 @@ class JarvisLive:
             raise
 
     async def _play_audio(self):
+        if sd is None: return
         print("[J.A.R.V.I.S] 🔊 Play started")
 
         stream = sd.RawOutputStream(
@@ -900,12 +903,15 @@ class JarvisLive:
 
         # Start dashboard (optional — needs: pip install fastapi "uvicorn[standard]" cryptography)
         try:
-            from dashboard.server import DashboardServer, PORT
-            import webbrowser
-            self._dashboard = DashboardServer()
-            self._dashboard.set_connect_callback(self._on_phone_connected)
-            asyncio.create_task(self._dashboard.serve())
-            asyncio.create_task(self._process_dashboard_commands())
+            if getattr(self, '_dashboard', None) is None:
+                from dashboard.server import DashboardServer, PORT
+                import webbrowser
+                self._dashboard = DashboardServer()
+                self._dashboard.set_connect_callback(self._on_phone_connected)
+                asyncio.create_task(self._dashboard.serve())
+                asyncio.create_task(self._process_dashboard_commands())
+            else:
+                asyncio.create_task(self._process_dashboard_commands())
             # webbrowser.open(f"http://127.0.0.1:{PORT}")
         except Exception as e:
             print(f"[Dashboard] Disabled: {e}")
