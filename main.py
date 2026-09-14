@@ -25,10 +25,16 @@ import traceback
 from datetime import datetime
 from pathlib import Path
 
-import sounddevice as sd
+try:
+    import sounddevice as sd
+except ImportError:
+    sd = None
 from google import genai
 from google.genai import types
-from ui import JarvisUI, JarvisUI
+try:
+    from ui import JarvisUI
+except ImportError:
+    JarvisUI = None
 from memory.memory_manager import (
     load_memory, update_memory, format_memory_for_prompt,
 )
@@ -76,13 +82,16 @@ class ApiKeyMissing(Exception):
 
 
 def _get_api_key() -> str:
+    env_key = os.environ.get("GEMINI_API_KEY", "").strip()
+    if env_key and env_key not in ("", "YOUR_GEMINI_API_KEY_HERE"):
+        return env_key
     try:
         with open(API_CONFIG_PATH, "r", encoding="utf-8") as f:
             key = json.load(f)["gemini_api_key"]
     except (json.JSONDecodeError, KeyError, FileNotFoundError) as e:
-        raise ApiKeyMissing(f"config/api_keys.json is missing or invalid: {e}") from e
+        raise ApiKeyMissing(f"GEMINI_API_KEY env var missing and config/api_keys.json is invalid: {e}") from e
     if not key or key.strip() in ("", "YOUR_GEMINI_API_KEY_HERE"):
-        raise ApiKeyMissing("No API key set in config/api_keys.json")
+        raise ApiKeyMissing("No API key set in ENV or config/api_keys.json")
     return key
 
 
