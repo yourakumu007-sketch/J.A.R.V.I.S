@@ -1,9 +1,9 @@
 # The wake-service microphone backend is best supported on Python 3.10-3.12.
 # PyAudio is an optional native dependency and is skipped on Python 3.13+ / 3.14.
 
-PyQt6
-PyQt6-WebEngine
-sounddevice
+PyQt6; sys_platform == "win32"
+PyQt6-WebEngine; sys_platform == "win32"
+sounddevice; sys_platform == "win32"
 google-genai
 google-generativeai
 pillow
@@ -11,12 +11,12 @@ requests
 beautifulsoup4
 duckduckgo-search
 playwright
-pyautogui
+pyautogui; sys_platform == "win32"
 pyperclip
 pygetwindow
-opencv-python
+opencv-python; sys_platform == "win32"
 numpy
-mss
+mss; sys_platform == "win32"
 psutil
 send2trash
 youtube-transcript-api
