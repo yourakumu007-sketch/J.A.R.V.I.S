@@ -13,7 +13,12 @@ from pathlib import Path
 from typing import Optional
 
 import numpy as np
-import sounddevice as sd
+
+try:
+    import sounddevice as sd
+except ImportError:
+    sd = None
+
 
 try:
     import cv2
@@ -329,6 +334,9 @@ class _VisionSession:
             raise  
 
     async def _play_loop(self) -> None:
+        if sd is None:
+            print('Audio not available (cloud mode)')
+            return
         stream = sd.RawOutputStream(
             samplerate=_RECEIVE_SAMPLE_RATE,
             channels=_CHANNELS,

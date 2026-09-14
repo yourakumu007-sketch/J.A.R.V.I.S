@@ -15,7 +15,12 @@ import threading
 from typing import Callable, Optional
 
 import numpy as np
-import sounddevice as sd
+
+try:
+    import sounddevice as sd
+except ImportError:
+    sd = None
+
 
 
 
@@ -82,6 +87,7 @@ def _play_np(samples, sample_rate: int) -> None:
     """Play float32 mono (or stereo) audio via sounddevice.
     Accepts numpy arrays or PyTorch tensors.
     """
+    if sd is None: return
     sd.play(_to_numpy(samples), sample_rate)
     sd.wait()
 
@@ -95,6 +101,7 @@ def _play_audio_bytes(audio_bytes: bytes) -> None:
         nchannels=1,
     )
     samples = np.array(decoded.samples, dtype=np.float32)
+    if sd is None: return
     sd.play(samples, decoded.sample_rate)
     sd.wait()
 
@@ -418,7 +425,7 @@ class TTSPlayer:
                 on_done()
 
     def stop(self) -> None:
-        sd.stop()
+        if sd is not None: sd.stop()
         with self._lock:
             self._playing = False
 
