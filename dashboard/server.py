@@ -466,23 +466,14 @@ class DashboardServer:
 
         # serve CryptoJS from local cache, fallback to CDN redirect
         
-        @app.get("/api/config")
-        async def get_config():
-            return {
-                "primary_url": os.environ.get("PRIMARY_URL"),
-                "primary_ws_url": os.environ.get("PRIMARY_WS_URL")
-            }
 
 
         @app.get("/manifest.json")
         async def serve_manifest():
-            start_url = os.environ.get("PRIMARY_URL", "/")
-            if not start_url.endswith("/"):
-                start_url += "/"
             return JSONResponse({
                 "name": "J.A.R.V.I.S.",
                 "short_name": "JARVIS",
-                "start_url": start_url,
+                "start_url": "/",
 
                 "display": "standalone",
                 "background_color": "#050002",

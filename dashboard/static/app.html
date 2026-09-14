@@ -980,28 +980,13 @@ function receive(m) {
   }
 }
 
-async function connect() {
+function connect() {
   if (local) {
     $('net-status').textContent = 'DESKTOP';
     return;
   }
-  
-  
-    let wsHost = location.host;
-    let wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-    try {
-      const res = await fetch('/api/config');
-      if (res.ok) {
-        const config = await res.json();
-        if (config.primary_ws_url) {
-          const u = new URL(config.primary_ws_url);
-          wsProtocol = u.protocol;
-          wsHost = u.host;
-        }
-      }
-    } catch(e) {}
-    let q = token === '__TOKEN__' ? '' : `?token=${encodeURIComponent(token)}`;
-    ws = new WebSocket(`${wsProtocol}//${wsHost}/ws${q}`);
+  let p = location.protocol === 'https:' ? 'wss:' : 'ws:', q = token === '__TOKEN__' ? '' : `?token=${encodeURIComponent(token)}`;
+  ws = new WebSocket(`${p}//${location.host}/ws${q}`);
 
   ws.onopen = () => {
     $('net-status').textContent = emergency ? 'OFFLINE (SHUTDOWN)' : 'STABLE';

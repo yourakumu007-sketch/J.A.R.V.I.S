@@ -136,26 +136,3 @@ All dependencies are listed in `requirements.txt` and installed automatically by
 ## License
 
 Contributions, issues, and feature requests are welcome!
-
-
-## Cloud Deployment Architecture
-
-J.A.R.V.I.S. is deployed using a dual-cloud strategy:
-
-### **PRIMARY PLATFORM: Render**
-**URL:** `https://jarvis-web.onrender.com`
-- **Supported Features:** Full Runtime
-- **WebSocket/CHAT:** Fully supported
-- **Realtime Voice:** Fully supported
-- **PWA / Dashboard:** Fully supported
-- **PostgreSQL:** Fully supported
-- **Why?** Render provides containerized execution capable of holding persistent WebSockets open, allowing the live generative AI streams and Voice components to function as intended.
-
-### **SECONDARY PLATFORM: Vercel**
-**URL:** `https://jarvis-web.vercel.app`
-- **Supported Features:** API & Frontend Only
-- **WebSocket/CHAT:** ? **NOT SUPPORTED** (Vercel Serverless drops WS connections)
-- **Realtime Voice:** ? **NOT SUPPORTED**
-- **PWA / Dashboard:** Fully supported
-- **PostgreSQL:** Fully supported
-- **Why?** Vercel provides an ultra-fast global edge network for the static PWA and HTTP API endpoints. Note that live CHAT and Voice will route gracefully back to Render if `PRIMARY_WS_URL` is set in the Vercel environment.
