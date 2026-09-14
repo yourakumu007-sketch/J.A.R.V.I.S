@@ -108,7 +108,7 @@ def _real_profile_dir(browser: str) -> str:
             print(f"[Browser] ✅ Real profile found for {browser}: {p}")
             return str(p)
 
-    fallback = home / ".ultron_profiles" / browser
+    fallback = home / ".jarvis_profiles" / browser
     fallback.mkdir(parents=True, exist_ok=True)
     print(f"[Browser] ⚠️  Real profile not found for {browser}, using: {fallback}")
     return str(fallback)
@@ -534,7 +534,7 @@ class _BrowserSession:
 
         if engine_name == "firefox":
             profile = _firefox_profile_dir() or str(
-                Path.home() / ".ultron_profiles" / "firefox"
+                Path.home() / ".jarvis_profiles" / "firefox"
             )
             kwargs: dict = {
                 "headless":    False,
@@ -549,16 +549,16 @@ class _BrowserSession:
                 self._context = await engine_obj.launch_persistent_context(profile, **kwargs)
             except Exception as e:
                 print(f"[Browser] Firefox real profile failed ({e}), using J.A.R.V.I.S profile")
-                ultron = str(Path.home() / ".ultron_profiles" / "firefox_ultron")
-                Path(ultron).mkdir(parents=True, exist_ok=True)
-                self._context = await engine_obj.launch_persistent_context(ultron, **kwargs)
+                jarvis_profile = str(Path.home() / ".jarvis_profiles" / "firefox_jarvis")
+                Path(jarvis_profile).mkdir(parents=True, exist_ok=True)
+                self._context = await engine_obj.launch_persistent_context(jarvis_profile, **kwargs)
 
             self._page = await self._adopt_page()
             print(f"[Browser] ✅ Firefox launched")
             return
 
         if engine_name == "webkit":
-            safari_profile = str(Path.home() / ".ultron_profiles" / "safari")
+            safari_profile = str(Path.home() / ".jarvis_profiles" / "safari")
             Path(safari_profile).mkdir(parents=True, exist_ok=True)
             kwargs = {
                 "headless":    False,
@@ -612,12 +612,12 @@ class _BrowserSession:
         # Chrome sürümleri otomasyonla gerçek profili engelliyor). Kalıcı
         # J.A.R.V.I.S otomasyon profiline geçilir — buraya bir kez giriş yapılan
         # hesaplar sonraki oturumlarda da açık kalır.
-        ultron_profile = str(Path.home() / ".ultron_profiles" / self.browser_name)
-        Path(ultron_profile).mkdir(parents=True, exist_ok=True)
-        print(f"[Browser] Retrying with J.A.R.V.I.S profile: {ultron_profile}")
+        jarvis_profile = str(Path.home() / ".jarvis_profiles" / self.browser_name)
+        Path(jarvis_profile).mkdir(parents=True, exist_ok=True)
+        print(f"[Browser] Retrying with J.A.R.V.I.S profile: {jarvis_profile}")
 
         try:
-            self._context = await engine_obj.launch_persistent_context(ultron_profile, **kwargs)
+            self._context = await engine_obj.launch_persistent_context(jarvis_profile, **kwargs)
             self._page = await self._adopt_page()
             print(f"[Browser] ✅ Launched [{label}] with J.A.R.V.I.S profile "
                   f"(sign-ins persist across sessions)")
@@ -806,7 +806,7 @@ class _BrowserSession:
     async def screenshot(self, path: str = None) -> str:
         page = await self._get_page()
         try:
-            save_path = path or str(Path.home() / "Desktop" / "ultron_screenshot.png")
+            save_path = path or str(Path.home() / "Desktop" / "jarvis_screenshot.png")
             await page.screenshot(path=save_path, full_page=False)
             return f"Screenshot saved: {save_path}"
         except Exception as e:

@@ -36,7 +36,7 @@
 ### Option 2: Manual Setup
 
 ```bash
-git clone https://github.com/morphhyyy-cpu/ULTRON.git
+git clone https://github.com/yourakumu007-sketch/J.A.R.V.I.S.git
 cd J.A.R.V.I.S
 python JARVIS_SETUP.py
 ```
@@ -44,7 +44,7 @@ python JARVIS_SETUP.py
 ### Option 3: Step-by-Step Manual
 
 ```bash
-git clone https://github.com/morphhyyy-cpu/ULTRON.git
+git clone https://github.com/yourakumu007-sketch/J.A.R.V.I.S.git
 cd J.A.R.V.I.S
 pip install -r requirements.txt
 python -m playwright install chromium

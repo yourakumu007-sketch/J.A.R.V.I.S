@@ -33,3 +33,5 @@ pywin32; sys_platform == "win32"
 qrcode[pil]
 SpeechRecognition
 pyaudio; python_version < "3.13"
+
+psycopg2-binary>=2.9.9

@@ -1,4 +1,12 @@
-import json
+import os
+import re
+
+# 1. Update memory_manager.py to support PostgreSQL architecture
+mem_path = r"memory\memory_manager.py"
+with open(mem_path, "r", encoding="utf-8") as f:
+    mem_code = f.read()
+
+new_mem_code = """import json
 import os
 import sys
 from datetime import datetime
@@ -116,3 +124,47 @@ def format_memory_for_prompt(memory: dict) -> str:
     out = chr(10).join(lines)
     if len(out) > MEMORY_MAX_CHARS: out = out[:MEMORY_MAX_CHARS] + "... (truncated)"
     return out
+"""
+if "user_memory" not in mem_code:
+    with open(mem_path, "w", encoding="utf-8") as f:
+        f.write(new_mem_code)
+    print("Updated memory_manager.py for DB support.")
+
+# 2. Add psycopg2 to requirements if not present
+req_path = r"requirements.txt"
+if os.path.exists(req_path):
+    with open(req_path, "r", encoding="utf-8") as f:
+        reqs = f.read()
+    if "psycopg2-binary" not in reqs:
+        with open(req_path, "a", encoding="utf-8") as f:
+            f.write("\npsycopg2-binary>=2.9.9\n")
+        print("Added psycopg2-binary to requirements.txt")
+
+# 3. Create render.yaml
+render_yaml = """services:
+  - type: web
+    name: jarvis-web
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python main.py"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: DATABASE_URL
+        fromDatabase:
+          name: jarvis-db
+          property: connectionString
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: JARVIS_HOST
+        value: "0.0.0.0"
+
+databases:
+  - name: jarvis-db
+    databaseName: jarvis
+    user: jarvis
+"""
+with open("render.yaml", "w", encoding="utf-8") as f:
+    f.write(render_yaml)
+print("Created render.yaml")
+

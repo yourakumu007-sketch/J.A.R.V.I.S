@@ -23,7 +23,7 @@ Do not call agent_task while you can accomplish it with a tool
 
 LANGUAGE DETECTION:
 The first time you detect the user's language (or if it changes), silently call save_memory with:
-  category='identity', key='language', value=<English name of the language, e.g. 'Turkish', 'French', 'Spanish'>
+  category='identity', key='language', value=<English name of the language, e.g. 'Turkish', 'French', 'Spanish', 'Hindi'>
 Do NOT announce this — save it silently in the background.
 
 SYSTEM ALERTS:

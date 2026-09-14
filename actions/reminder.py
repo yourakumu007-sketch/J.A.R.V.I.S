@@ -14,7 +14,7 @@ _CNW: dict = (
 )
 
 def _scripts_dir() -> Path:
-    d = Path.home() / ".ultron" / "reminders"
+    d = Path.home() / ".jarvis" / "reminders"
     d.mkdir(parents=True, exist_ok=True)
     return d
 

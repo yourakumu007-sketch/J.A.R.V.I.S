@@ -38,7 +38,8 @@ except Exception:
 
 BASE_DIR    = Path(__file__).resolve().parent.parent
 STATIC_DIR  = Path(__file__).parent / "static"
-PORT        = 8000
+import os
+PORT        = int(os.environ.get('JARVIS_PORT', 8000))
 MAX_UPLOAD_MB = 500
 
 
@@ -170,7 +171,7 @@ def _ensure_network_access(port: int) -> None:
             )
 
         bat_body = "\r\n".join(bat_lines) + "\r\n"
-        fd, bat_path = tempfile.mkstemp(suffix=".bat", prefix="ultron_fw_")
+        fd, bat_path = tempfile.mkstemp(suffix=".bat", prefix="jarvis_fw_")
         try:
             os.write(fd, bat_body.encode("mbcs"))   # Windows cmd.exe expects ANSI
             os.close(fd)
@@ -464,6 +465,17 @@ class DashboardServer:
             return bool(tok) and tok in self._tokens
 
         # serve CryptoJS from local cache, fallback to CDN redirect
+        @app.get("/manifest.json")
+        async def serve_manifest():
+            return JSONResponse({
+                "name": "J.A.R.V.I.S.",
+                "short_name": "JARVIS",
+                "start_url": "/",
+                "display": "standalone",
+                "background_color": "#050002",
+                "theme_color": "#ff1b2d"
+            })
+
         @app.get("/static/crypto.js")
         async def serve_crypto():
             if _CRYPTOJS_FILE.exists():
@@ -552,9 +564,9 @@ class DashboardServer:
 </style></head>
 <body>
 <script>
-  sessionStorage.setItem('ultron_token','{tok}');
-  sessionStorage.setItem('ultron_key','{key}');
-  localStorage.setItem('ultron_device_token','{dev_tok}');
+  sessionStorage.setItem('jarvis_token','{tok}');
+  sessionStorage.setItem('jarvis_key','{key}');
+  localStorage.setItem('jarvis_device_token','{dev_tok}');
   setTimeout(function(){{location.replace('/')}},400);
 </script>
 <p>Connecting to J.A.R.V.I.S…</p>
@@ -786,11 +798,11 @@ class DashboardServer:
         """Second HTTPS server on PORT+1 sharing the same app and in-memory state.
         Chrome HTTPS-upgrades any bare IP:PORT the user types, so this port also needs TLS.
         User types IP:8001 → Chrome tries https → self-signed cert warning → accept once → done."""
-        ssl_key  = BASE_DIR / "config" / "certs" / "ultron.key"
-        ssl_cert = BASE_DIR / "config" / "certs" / "ultron.crt"
+        ssl_key  = BASE_DIR / "config" / "certs" / "jarvis.key"
+        ssl_cert = BASE_DIR / "config" / "certs" / "jarvis.crt"
         asyncio.get_event_loop().run_in_executor(None, _ensure_network_access, PORT + 1)
         cfg = uvicorn.Config(
-            self.app, host="0.0.0.0", port=PORT + 1, log_level="warning",
+            self.app, host=os.environ.get("JARVIS_HOST", "0.0.0.0"), port=PORT + 1, log_level="warning",
             ssl_keyfile=str(ssl_key), ssl_certfile=str(ssl_cert),
         )
         print(f"[Dashboard] Manual entry:  {self._ip}:{PORT + 1}  (type in browser, accept cert once)")
@@ -807,14 +819,14 @@ class DashboardServer:
         asyncio.get_event_loop().run_in_executor(None, _ensure_network_access, PORT)
 
         use_ssl  = self._ssl_enabled()
-        ssl_key  = BASE_DIR / "config" / "certs" / "ultron.key"
-        ssl_cert = BASE_DIR / "config" / "certs" / "ultron.crt"
+        ssl_key  = BASE_DIR / "config" / "certs" / "jarvis.key"
+        ssl_cert = BASE_DIR / "config" / "certs" / "jarvis.crt"
 
         if use_ssl:
             asyncio.create_task(self._serve_alias())
 
         cfg = uvicorn.Config(
-            self.app, host="0.0.0.0", port=PORT, log_level="warning",
+            self.app, host=os.environ.get("JARVIS_HOST", "0.0.0.0"), port=PORT, log_level="warning",
             **({"ssl_keyfile": str(ssl_key), "ssl_certfile": str(ssl_cert)} if use_ssl else {}),
         )
 

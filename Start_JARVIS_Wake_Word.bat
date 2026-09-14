@@ -9,7 +9,7 @@ echo ==============================================
 cd /d "%~dp0"
 
 REM ── Check if setup has been completed ──────────────────────────────
-if not exist ".ultron_setup_complete" (
+if not exist ".jarvis_setup_complete" (
     echo First-time launch detected. Running setup first...
     echo.
     python JARVIS_SETUP.py

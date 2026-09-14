@@ -21,8 +21,8 @@ if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8')
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-REPO_URL_GIT = "https://github.com/morphhyyy-cpu/ultronmain"
-REPO_URL_ZIP = "https://github.com/morphhyyy-cpu/ULTRON/archive/refs/heads/main.zip"
+REPO_URL_GIT = "https://github.com/yourakumu007-sketch/J.A.R.V.I.S"
+REPO_URL_ZIP = "https://github.com/yourakumu007-sketch/J.A.R.V.I.S/archive/refs/heads/main.zip"
 
 MARKER_FILES = [
     "main.py",
@@ -91,7 +91,7 @@ def download_from_github():
     # Try ZIP download
     try:
         print("[INFO] Trying direct ZIP download...")
-        zip_path = SCRIPT_DIR / "ultron_temp.zip"
+        zip_path = SCRIPT_DIR / "jarvis_temp.zip"
         urllib.request.urlretrieve(REPO_URL_ZIP, zip_path)
         
         print("[INFO] Extracting ZIP...")
@@ -210,7 +210,7 @@ def setup_api_keys():
             sys.exit(1)
 
 def write_setup_marker():
-    marker_file = SCRIPT_DIR / ".ultron_setup_complete"
+    marker_file = SCRIPT_DIR / ".jarvis_setup_complete"
     try:
         with open(marker_file, "w", encoding="utf-8") as f:
             f.write(f"Setup completed on: {datetime.now().isoformat()}")
