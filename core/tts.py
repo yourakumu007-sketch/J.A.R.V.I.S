@@ -113,7 +113,7 @@ def _play_audio_bytes(audio_bytes: bytes) -> None:
 class EdgeTTSEngine:
     """Microsoft EdgeTTS – free, requires internet."""
 
-    def __init__(self, voice: str = "en-US-ChristopherNeural"):
+    def __init__(self, voice: str = "hi-IN-MadhurNeural"):
         self.voice = voice
         self._loop = asyncio.new_event_loop()
         self._thread = threading.Thread(target=self._loop.run_forever, daemon=True)
@@ -451,7 +451,7 @@ class PiperTTSEngine:
                 os.unlink(wav_file.name)
         except Exception:
             # Fallback to deep male EdgeTTS
-            fallback = EdgeTTSEngine(voice="en-US-ChristopherNeural")
+            fallback = EdgeTTSEngine(voice="hi-IN-MadhurNeural")
             fallback.speak(text)
 
 
@@ -472,6 +472,6 @@ def create_tts_player(config: dict) -> TTSPlayer:
         voice_id = config.get("tts_voice", "pNInz6obpgDQGcFmaJgB")
         engine   = ElevenLabsTTSEngine(api_key=api_key, voice_id=voice_id)
     else:   # edgetts
-        voice  = config.get("tts_voice", "en-US-ChristopherNeural")
+        voice  = config.get("tts_voice", "hi-IN-MadhurNeural")
         engine = EdgeTTSEngine(voice=voice)
     return TTSPlayer(engine)
